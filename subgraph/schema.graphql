@@ -1,0 +1,16 @@
+type Job @entity {
+  id: ID!
+  client: Bytes!
+  freelancer: Bytes!
+  amount: BigInt!
+  status: String!
+}
+
+type Rating @entity {
+  id: ID!
+  from: Bytes!
+  to: Bytes!
+  score: Int!
+  comment: String!
+  txHash: Bytes!
+}

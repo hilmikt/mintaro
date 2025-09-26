@@ -1,0 +1,17 @@
+{
+  "name": "mintaro",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "contracts",
+    "subgraph",
+    "frontend"
+  ],
+  "scripts": {
+    "bootstrap": "pnpm install -r",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "test:contracts": "pnpm --filter contracts hardhat test",
+    "deploy:contracts": "pnpm --filter contracts deploy",
+    "graph:dev": "pnpm --filter subgraph codegen && pnpm --filter subgraph build"
+  }
+}

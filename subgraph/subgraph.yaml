@@ -1,0 +1,48 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+
+dataSources:
+  - kind: ethereum
+    name: Escrow
+    network: polygon-amoy
+    source:
+      address: "0x87a58B3D8c50735BEdBa2C8868932F12Cd659c54"   # replace after deploy
+      abi: Escrow
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: [Job]
+      abis:
+        - name: Escrow
+          file: ./abis/Escrow.json
+      eventHandlers:
+        - event: JobFunded(indexed uint256,indexed address,indexed address,uint256)
+          handler: handleJobFunded
+        - event: JobReleased(indexed uint256)
+          handler: handleJobReleased
+        - event: JobRefunded(indexed uint256)
+          handler: handleJobRefunded
+      file: ./src/mapping.ts
+
+  - kind: ethereum
+    name: Reputation
+    network: polygon-amoy
+    source:
+      address: "0x52EF27e7E2800f7E186d15D1Cd122F7a020338DF"
+      abi: Reputation
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities: [Rating]
+      abis:
+        - name: Reputation
+          file: ./abis/Reputation.json
+      eventHandlers:
+        - event: RatingGiven(indexed address,indexed address,uint8,string)
+          handler: handleRatingGiven
+      file: ./src/mapping.ts
