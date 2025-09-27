@@ -1,9 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useAccount } from "wagmi";
 import ConnectWallet from "../components/ConnectWallet";
 import Navbar from "../components/Navbar";
+import { useWeb3ModalReady } from "./AppProviders";
+import {
+  fetchProfileFromCid,
+  readStoredCid,
+  type ProfileFetchResponse,
+} from "../lib/profileClient";
+
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -104,10 +113,119 @@ function Hero() {
 
 function WalletRegion() {
   return (
-    <div className="flex flex-col gap-3">
-      {/* Delegates to ConnectWallet which handles connect/disconnect */}
-      {/* File: frontend/components/ConnectWallet.tsx */}
+    <div className="flex flex-col gap-4">
       <ConnectWallet />
+      <ProfileSummary />
+    </div>
+  );
+}
+
+function ProfileSummary() {
+  const { address, isConnected } = useAccount();
+  const isReady = useWeb3ModalReady();
+  const [profile, setProfile] = useState<ProfileFetchResponse | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isReady || !isConnected || !address) {
+      setProfile(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
+    const storedCid = readStoredCid(address);
+    if (!storedCid) {
+      setProfile(null);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    fetchProfileFromCid(address, storedCid)
+      .then((data) => {
+        setProfile(data);
+        setError(null);
+      })
+      .catch(() => {
+        setError("Could not load profile from Filecoin");
+        setProfile(null);
+      })
+      .finally(() => setLoading(false));
+  }, [address, isConnected, isReady]);
+
+  if (!isReady) {
+    return null;
+  }
+
+  if (!isConnected || !address) {
+    return (
+      <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 px-4 py-3 text-xs text-neutral-400">
+        Connect your wallet to surface your Filecoin-backed profile.
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 px-4 py-3 text-xs text-neutral-400">
+        Loading profile from Filecoin...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-xl border border-red-900/60 bg-red-900/10 px-4 py-3 text-xs text-red-300">
+        {error}
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 px-4 py-3 text-xs text-neutral-400">
+        No profile stored yet.
+        <Link href="/profile" className="ml-1 text-emerald-400 hover:text-emerald-300">
+          Create one ?
+        </Link>
+      </div>
+    );
+  }
+
+  const topSkills = profile.profile.skills.slice(0, 3);
+  const label = profile.profile.role === "client" ? "Client" : "Freelancer";
+
+  return (
+    <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 px-4 py-4">
+      <div className="flex flex-col gap-1 text-sm text-neutral-100">
+        <span className="text-xs uppercase tracking-wide text-emerald-300">
+          Filecoin profile detected
+        </span>
+        <span className="text-lg font-semibold">{profile.profile.name}</span>
+        <span className="text-xs text-neutral-400">{label}</span>
+        <p className="mt-2 line-clamp-3 text-sm text-neutral-300">{profile.profile.bio}</p>
+        {topSkills.length ? (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {topSkills.map((skill) => (
+              <span
+                key={skill}
+                className="rounded-full border border-emerald-500/40 px-3 py-1 text-xs text-emerald-200"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        ) : null}
+        <Link
+          href="/profile"
+          className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-emerald-300 hover:text-emerald-200"
+        >
+          Open profile ?
+        </Link>
+      </div>
     </div>
   );
 }
@@ -457,3 +575,5 @@ function DotIcon({ className = "h-5 w-5" }: { className?: string }) {
     </svg>
   );
 }
+
+
