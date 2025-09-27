@@ -2,12 +2,13 @@
 import Link from "next/link";
 import { useAccount, useDisconnect } from "wagmi";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { useWeb3ModalReady } from "../app/AppProviders";
 
 type ConnectWalletProps = {
   showProfileButton?: boolean;
 };
 
-export default function ConnectWallet({ showProfileButton = true }: ConnectWalletProps) {
+function WalletControls({ showProfileButton }: ConnectWalletProps) {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
   const { open } = useWeb3Modal();
@@ -48,4 +49,18 @@ export default function ConnectWallet({ showProfileButton = true }: ConnectWalle
       </button>
     </div>
   );
+}
+
+export default function ConnectWallet({ showProfileButton = true }: ConnectWalletProps) {
+  const isReady = useWeb3ModalReady();
+
+  if (!isReady) {
+    return (
+      <span className="inline-flex h-9 w-24 items-center justify-center rounded-xl border border-neutral-800 bg-neutral-900 text-xs text-neutral-500">
+        Loading...
+      </span>
+    );
+  }
+
+  return <WalletControls showProfileButton={showProfileButton} />;
 }
