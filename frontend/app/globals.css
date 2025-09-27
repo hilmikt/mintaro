@@ -1,3 +1,11 @@
-﻿@tailwind base;
+﻿/* Tailwind base */
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Full-bleed background + no white borders */
+html, body, #__next { height: 100%; }
+html, body { margin: 0; background-color: #0a0a0a; }
+
+/* Smooth text */
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
