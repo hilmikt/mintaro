@@ -1,4 +1,5 @@
 import { defaultWagmiConfig } from "@web3modal/wagmi/react";
+import type { Chain } from "viem";
 import { polygon } from "wagmi/chains";
 
 const projectIdEnv =
@@ -12,7 +13,7 @@ if (!projectIdEnv) {
 }
 
 export const projectId = projectIdEnv;
-export const chains = [polygon];
+export const chains = [polygon] as const satisfies readonly [Chain, ...Chain[]];
 
 export const wagmiConfig = defaultWagmiConfig({
   chains,
