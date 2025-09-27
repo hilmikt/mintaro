@@ -41,15 +41,6 @@ importers:
       framer-motion:
         specifier: ^12.23.22
         version: 12.23.22(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      next:
-        specifier: ^14.2.5
-        version: 14.2.33(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react:
-        specifier: ^18.3.1
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.3.1
-        version: 18.3.1(react@18.3.1)
       viem:
         specifier: ^2.37.8
         version: 2.37.8(bufferutil@4.0.9)(typescript@5.9.2)(utf-8-validate@5.0.10)(zod@4.1.11)
@@ -66,9 +57,18 @@ importers:
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.21(postcss@8.5.6)
+      next:
+        specifier: ^14.2.33
+        version: 14.2.33(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       postcss:
         specifier: ^8.4.38
         version: 8.5.6
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
       tailwindcss:
         specifier: ^3.4.10
         version: 3.4.17(ts-node@10.9.2(@types/node@20.19.17)(typescript@5.9.2))
