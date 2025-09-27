@@ -1,28 +1,17 @@
-"use client";
+// frontend/lib/wagmi.ts
+import { defaultWagmiConfig } from "@web3modal/wagmi/react";
+import { polygon } from "wagmi/chains";
 
-import { WagmiConfig, http } from "wagmi";
-import { polygonAmoy } from "wagmi/chains";
-import { getDefaultConfig, RainbowKitProvider } from "@rainbow-me/rainbowkit";
-import "@rainbow-me/rainbowkit/styles.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+export const projectId =
+  process.env.NEXT_PUBLIC_WC_PROJECT_ID || "85fb5c5da75543b6892e077b311d379e";
 
-const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "demo";
-
-const config = getDefaultConfig({
-  appName: "Mintaro",
+export const wagmiConfig = defaultWagmiConfig({
+  chains: [polygon],
   projectId,
-  chains: [polygonAmoy],
-  transports: { [polygonAmoy.id]: http() }
+  metadata: {
+    name: "Mintaro",
+    description: "Trustless freelance platform",
+    url: "https://mintaro.xyz", // update for production
+    icons: ["https://mintaro.xyz/logo.png"],
+  },
 });
-
-const queryClient = new QueryClient();
-
-export function Providers({ children }: { children: React.ReactNode }) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <WagmiConfig config={config}>
-        <RainbowKitProvider>{children}</RainbowKitProvider>
-      </WagmiConfig>
-    </QueryClientProvider>
-  );
-}
