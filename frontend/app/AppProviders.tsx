@@ -16,7 +16,7 @@ const initializeWeb3Modal = () => {
   modalClient = createWeb3Modal({
     wagmiConfig,
     projectId,
-    chains,
+    defaultChain: chains[0],
   });
 
   return modalClient;
